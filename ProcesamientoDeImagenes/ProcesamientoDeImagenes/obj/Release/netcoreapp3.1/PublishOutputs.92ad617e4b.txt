@@ -1,8 +1,0 @@
-D:\Codigo\PI\ProcesamientoDeImagenes\ProcesamientoDeImagenes\bin\Release\netcoreapp3.1\publish\ProcesamientoDeImagenes.exe
-D:\Codigo\PI\ProcesamientoDeImagenes\ProcesamientoDeImagenes\bin\Release\netcoreapp3.1\publish\ProcesamientoDeImagenes.dll
-D:\Codigo\PI\ProcesamientoDeImagenes\ProcesamientoDeImagenes\bin\Release\netcoreapp3.1\publish\ProcesamientoDeImagenes.deps.json
-D:\Codigo\PI\ProcesamientoDeImagenes\ProcesamientoDeImagenes\bin\Release\netcoreapp3.1\publish\ProcesamientoDeImagenes.runtimeconfig.json
-D:\Codigo\PI\ProcesamientoDeImagenes\ProcesamientoDeImagenes\bin\Release\netcoreapp3.1\publish\ProcesamientoDeImagenes.pdb
-D:\Codigo\PI\ProcesamientoDeImagenes\ProcesamientoDeImagenes\bin\Release\netcoreapp3.1\publish\AForge.dll
-D:\Codigo\PI\ProcesamientoDeImagenes\ProcesamientoDeImagenes\bin\Release\netcoreapp3.1\publish\AForge.Video.dll
-D:\Codigo\PI\ProcesamientoDeImagenes\ProcesamientoDeImagenes\bin\Release\netcoreapp3.1\publish\AForge.Video.DirectShow.dll
