@@ -31,6 +31,14 @@ namespace PIA_ProcesamientoDeImagenes
         private VideoCaptureDevice webCam;
         private Bitmap imageClean;
 
+        
+        Bitmap video;
+
+        MotionDetector motionDetector;
+        float levelMotionDetector;
+
+        static readonly CascadeClassifier cascadeClassifier = new CascadeClassifier("haarcascade_frontalface_alt_tree.xml");
+
         public Form1()
         {
             InitializeComponent();
@@ -39,6 +47,8 @@ namespace PIA_ProcesamientoDeImagenes
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            motionDetector = new MotionDetector(new TwoFramesDifferenceDetector(), new MotionBorderHighlighting());
+            levelMotionDetector = 0;
             LoadDevices();
         }
 
@@ -54,8 +64,7 @@ namespace PIA_ProcesamientoDeImagenes
             string nameDevices = myDevices[cameraIndex].MonikerString;
             webCam = new VideoCaptureDevice(nameDevices);
             webCam.NewFrame += new AForge.Video.NewFrameEventHandler(Capture);
-            webCam.Start();
-            webCam.VideoResolution = webCam.VideoCapabilities[3];
+            webCam.Start();            
         }
 
 
@@ -73,11 +82,6 @@ namespace PIA_ProcesamientoDeImagenes
                 imageClean = (Bitmap)pictureBox2.Image;
             }
         }
-
-        Bitmap video;
-        VideoFileWriter FileWriter = new VideoFileWriter();
-        SaveFileDialog saveVideo;
-
         
         private void btnGrabar_Click(object sender, EventArgs e)
         {
@@ -86,17 +90,8 @@ namespace PIA_ProcesamientoDeImagenes
                 btnGrabar.Visible = false;
                 btnDetener.Visible = true;
 
-                saveVideo = new SaveFileDialog();
-                saveVideo.Filter = "Avi files(*.avi)|*.avi";
+                webCam.NewFrame += new AForge.Video.NewFrameEventHandler(Capture2);
 
-                if (saveVideo.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    webCam.NewFrame += new AForge.Video.NewFrameEventHandler(Capture2);
-                    int h = webCam.VideoResolution.FrameSize.Height;
-                    int w = webCam.VideoResolution.FrameSize.Width;
-                    FileWriter.Open(saveVideo.FileName, w, h, 25, VideoCodec.Default, 5000000);
-                    FileWriter.WriteVideoFrame(video);
-                }
             }
         }
 
@@ -104,7 +99,7 @@ namespace PIA_ProcesamientoDeImagenes
         {
             btnDetener.Visible = false;
             btnGrabar.Visible = true;
-            FileWriter.Close();
+            pictureBox2.Image = null;
 
         }
 
@@ -116,9 +111,74 @@ namespace PIA_ProcesamientoDeImagenes
             }
         }
 
+        private void btnADM_Click(object sender, EventArgs e)
+        {
+            btnADM.Visible = false;
+            btnDDM.Visible = true;
+
+            videoSourcePlayer.Visible = true;
+
+            videoSourcePlayer.VideoSource = webCam;
+            videoSourcePlayer.Start();
+        }
+
+        private void btnDDM_Click(object sender, EventArgs e)
+        {
+            btnADM.Visible = true;
+            btnDDM.Visible = false;
+
+            videoSourcePlayer.Visible = false;
+
+            videoSourcePlayer.Stop();
+            webCam.Start();
+        }
+
+        private void videoSourcePlayer_NewFrame(object sender, ref Bitmap image)
+        {
+            levelMotionDetector = motionDetector.ProcessFrame(image);
+        }
+
+        private void btnADR_Click(object sender, EventArgs e)
+        {
+            btnADR.Visible = false;
+            btnDDR.Visible = true;
+            webCam.NewFrame += FaceDetection;
+        }
+
+        private void FaceDetection(object sender, NewFrameEventArgs eventArgs)
+        {
+            if (btnDDR.Visible)
+            {
+                Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+                Image<Bgr, byte> grayImage = bitmap.ToImage<Bgr, byte>();
+
+                Rectangle[] rectangles = cascadeClassifier.DetectMultiScale(grayImage, 1.4, 1);
+
+                foreach (Rectangle rectangle in rectangles)
+                {
+                    using (Graphics graphics = Graphics.FromImage(bitmap))
+                    {
+                        using (Pen pen = new Pen(Color.Red, 1))
+                        {
+                            graphics.DrawRectangle(pen, rectangle);
+                        }
+                    }
+                }
+                pictureBox1.Image = bitmap;
+            }
+        }
+
+        private void btnDDR_Click(object sender, EventArgs e)
+        {
+            btnADR.Visible = true;
+            btnDDR.Visible = false;
+        }
+
+        /////////////////////   Filtros    ///////////////////////// 
+
         private void checkBoxUmbral_CheckedChanged(object sender, EventArgs e)
         {
-            if (pictureBox2.Image != null && checkBoxUmbral.Checked == true)
+            if (pictureBox2.Image != null && checkBoxUmbral.Checked == true && btnDetener.Visible == false)
             {
                 pictureBox2.Image = UmbralImage((Bitmap)pictureBox2.Image, 60);
             }
@@ -183,8 +243,15 @@ namespace PIA_ProcesamientoDeImagenes
 
             if(btnDetener.Visible)
             {
-                pictureBox2.Image = (Bitmap)e.Frame.Clone();
                 video = (Bitmap)e.Frame.Clone();
+
+                if(checkBoxEG.Checked == true)
+                {
+                    pictureBox2.Image = MakeGrayscale3((Bitmap)video);
+                } else
+                {
+                    pictureBox2.Image = (Bitmap)e.Frame.Clone();
+                }
             }
         }
 

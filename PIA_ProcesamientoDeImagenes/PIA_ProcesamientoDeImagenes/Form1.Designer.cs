@@ -49,8 +49,15 @@ namespace PIA_ProcesamientoDeImagenes
             this.saveBtn = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.videoSourcePlayer = new AForge.Controls.VideoSourcePlayer();
             this.label1 = new System.Windows.Forms.Label();
             this.devices = new System.Windows.Forms.ComboBox();
+            this.btnADM = new System.Windows.Forms.Button();
+            this.btnDDM = new System.Windows.Forms.Button();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.btnADR = new System.Windows.Forms.Button();
+            this.btnDDR = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -58,31 +65,36 @@ namespace PIA_ProcesamientoDeImagenes
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(24, 31);
+            this.pictureBox1.Location = new System.Drawing.Point(4, 20);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(485, 324);
+            this.pictureBox1.Size = new System.Drawing.Size(364, 263);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(817, 31);
+            this.pictureBox2.Location = new System.Drawing.Point(613, 25);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(491, 324);
+            this.pictureBox2.Size = new System.Drawing.Size(368, 263);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
             // 
             // onCamera
             // 
-            this.onCamera.Location = new System.Drawing.Point(40, 30);
+            this.onCamera.Location = new System.Drawing.Point(30, 24);
+            this.onCamera.Margin = new System.Windows.Forms.Padding(2);
             this.onCamera.Name = "onCamera";
-            this.onCamera.Size = new System.Drawing.Size(103, 33);
+            this.onCamera.Size = new System.Drawing.Size(77, 27);
             this.onCamera.TabIndex = 2;
             this.onCamera.Text = "Activar";
             this.onCamera.UseVisualStyleBackColor = true;
@@ -90,9 +102,10 @@ namespace PIA_ProcesamientoDeImagenes
             // 
             // offCamera
             // 
-            this.offCamera.Location = new System.Drawing.Point(40, 70);
+            this.offCamera.Location = new System.Drawing.Point(30, 57);
+            this.offCamera.Margin = new System.Windows.Forms.Padding(2);
             this.offCamera.Name = "offCamera";
-            this.offCamera.Size = new System.Drawing.Size(103, 33);
+            this.offCamera.Size = new System.Drawing.Size(77, 27);
             this.offCamera.TabIndex = 3;
             this.offCamera.Text = "Desactivar";
             this.offCamera.UseVisualStyleBackColor = true;
@@ -102,9 +115,11 @@ namespace PIA_ProcesamientoDeImagenes
             // 
             this.groupBox1.Controls.Add(this.offCamera);
             this.groupBox1.Controls.Add(this.onCamera);
-            this.groupBox1.Location = new System.Drawing.Point(51, 401);
+            this.groupBox1.Location = new System.Drawing.Point(38, 326);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(184, 118);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Size = new System.Drawing.Size(138, 96);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Camara";
@@ -114,18 +129,21 @@ namespace PIA_ProcesamientoDeImagenes
             this.groupBox2.Controls.Add(this.photo);
             this.groupBox2.Controls.Add(this.btnGrabar);
             this.groupBox2.Controls.Add(this.btnDetener);
-            this.groupBox2.Location = new System.Drawing.Point(267, 401);
+            this.groupBox2.Location = new System.Drawing.Point(200, 326);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(184, 118);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox2.Size = new System.Drawing.Size(138, 96);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Acciones";
             // 
             // photo
             // 
-            this.photo.Location = new System.Drawing.Point(40, 70);
+            this.photo.Location = new System.Drawing.Point(30, 57);
+            this.photo.Margin = new System.Windows.Forms.Padding(2);
             this.photo.Name = "photo";
-            this.photo.Size = new System.Drawing.Size(103, 33);
+            this.photo.Size = new System.Drawing.Size(77, 27);
             this.photo.TabIndex = 3;
             this.photo.Text = "Foto";
             this.photo.UseVisualStyleBackColor = true;
@@ -133,9 +151,10 @@ namespace PIA_ProcesamientoDeImagenes
             // 
             // btnGrabar
             // 
-            this.btnGrabar.Location = new System.Drawing.Point(40, 29);
+            this.btnGrabar.Location = new System.Drawing.Point(30, 24);
+            this.btnGrabar.Margin = new System.Windows.Forms.Padding(2);
             this.btnGrabar.Name = "btnGrabar";
-            this.btnGrabar.Size = new System.Drawing.Size(103, 33);
+            this.btnGrabar.Size = new System.Drawing.Size(77, 27);
             this.btnGrabar.TabIndex = 2;
             this.btnGrabar.Text = "Grabar";
             this.btnGrabar.UseVisualStyleBackColor = true;
@@ -143,9 +162,10 @@ namespace PIA_ProcesamientoDeImagenes
             // 
             // btnDetener
             // 
-            this.btnDetener.Location = new System.Drawing.Point(40, 30);
+            this.btnDetener.Location = new System.Drawing.Point(30, 24);
+            this.btnDetener.Margin = new System.Windows.Forms.Padding(2);
             this.btnDetener.Name = "btnDetener";
-            this.btnDetener.Size = new System.Drawing.Size(103, 33);
+            this.btnDetener.Size = new System.Drawing.Size(77, 27);
             this.btnDetener.TabIndex = 4;
             this.btnDetener.Text = "Detener";
             this.btnDetener.UseVisualStyleBackColor = true;
@@ -155,9 +175,10 @@ namespace PIA_ProcesamientoDeImagenes
             // checkBoxUmbral
             // 
             this.checkBoxUmbral.AutoSize = true;
-            this.checkBoxUmbral.Location = new System.Drawing.Point(40, 39);
+            this.checkBoxUmbral.Location = new System.Drawing.Point(30, 32);
+            this.checkBoxUmbral.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxUmbral.Name = "checkBoxUmbral";
-            this.checkBoxUmbral.Size = new System.Drawing.Size(71, 20);
+            this.checkBoxUmbral.Size = new System.Drawing.Size(59, 17);
             this.checkBoxUmbral.TabIndex = 6;
             this.checkBoxUmbral.Text = "Umbral";
             this.checkBoxUmbral.UseVisualStyleBackColor = true;
@@ -176,9 +197,10 @@ namespace PIA_ProcesamientoDeImagenes
             // checkBoxRSP
             // 
             this.checkBoxRSP.AutoSize = true;
-            this.checkBoxRSP.Location = new System.Drawing.Point(40, 66);
+            this.checkBoxRSP.Location = new System.Drawing.Point(30, 54);
+            this.checkBoxRSP.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxRSP.Name = "checkBoxRSP";
-            this.checkBoxRSP.Size = new System.Drawing.Size(148, 20);
+            this.checkBoxRSP.Size = new System.Drawing.Size(120, 17);
             this.checkBoxRSP.TabIndex = 7;
             this.checkBoxRSP.Text = "Ruido sal y pimienta";
             this.checkBoxRSP.UseVisualStyleBackColor = true;
@@ -186,9 +208,10 @@ namespace PIA_ProcesamientoDeImagenes
             // checkBoxSobel
             // 
             this.checkBoxSobel.AutoSize = true;
-            this.checkBoxSobel.Location = new System.Drawing.Point(40, 119);
+            this.checkBoxSobel.Location = new System.Drawing.Point(30, 97);
+            this.checkBoxSobel.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxSobel.Name = "checkBoxSobel";
-            this.checkBoxSobel.Size = new System.Drawing.Size(63, 20);
+            this.checkBoxSobel.Size = new System.Drawing.Size(53, 17);
             this.checkBoxSobel.TabIndex = 9;
             this.checkBoxSobel.Text = "Sobel";
             this.checkBoxSobel.UseVisualStyleBackColor = true;
@@ -196,9 +219,10 @@ namespace PIA_ProcesamientoDeImagenes
             // checkBoxNegativos
             // 
             this.checkBoxNegativos.AutoSize = true;
-            this.checkBoxNegativos.Location = new System.Drawing.Point(40, 93);
+            this.checkBoxNegativos.Location = new System.Drawing.Point(30, 76);
+            this.checkBoxNegativos.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxNegativos.Name = "checkBoxNegativos";
-            this.checkBoxNegativos.Size = new System.Drawing.Size(89, 20);
+            this.checkBoxNegativos.Size = new System.Drawing.Size(74, 17);
             this.checkBoxNegativos.TabIndex = 8;
             this.checkBoxNegativos.Text = "Negativos";
             this.checkBoxNegativos.UseVisualStyleBackColor = true;
@@ -206,9 +230,10 @@ namespace PIA_ProcesamientoDeImagenes
             // checkBoxEG
             // 
             this.checkBoxEG.AutoSize = true;
-            this.checkBoxEG.Location = new System.Drawing.Point(40, 146);
+            this.checkBoxEG.Location = new System.Drawing.Point(30, 119);
+            this.checkBoxEG.Margin = new System.Windows.Forms.Padding(2);
             this.checkBoxEG.Name = "checkBoxEG";
-            this.checkBoxEG.Size = new System.Drawing.Size(128, 20);
+            this.checkBoxEG.Size = new System.Drawing.Size(103, 17);
             this.checkBoxEG.TabIndex = 10;
             this.checkBoxEG.Text = "Escala de grises";
             this.checkBoxEG.UseVisualStyleBackColor = true;
@@ -222,18 +247,21 @@ namespace PIA_ProcesamientoDeImagenes
             this.groupBox3.Controls.Add(this.checkBoxSobel);
             this.groupBox3.Controls.Add(this.checkBoxRSP);
             this.groupBox3.Controls.Add(this.checkBoxNegativos);
-            this.groupBox3.Location = new System.Drawing.Point(558, 31);
+            this.groupBox3.Location = new System.Drawing.Point(418, 25);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(217, 249);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox3.Size = new System.Drawing.Size(163, 202);
             this.groupBox3.TabIndex = 11;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filtros";
             // 
             // cleanBtn
             // 
-            this.cleanBtn.Location = new System.Drawing.Point(59, 183);
+            this.cleanBtn.Location = new System.Drawing.Point(44, 149);
+            this.cleanBtn.Margin = new System.Windows.Forms.Padding(2);
             this.cleanBtn.Name = "cleanBtn";
-            this.cleanBtn.Size = new System.Drawing.Size(103, 33);
+            this.cleanBtn.Size = new System.Drawing.Size(77, 27);
             this.cleanBtn.TabIndex = 4;
             this.cleanBtn.Text = "Limpiar";
             this.cleanBtn.UseVisualStyleBackColor = true;
@@ -241,9 +269,10 @@ namespace PIA_ProcesamientoDeImagenes
             // 
             // saveBtn
             // 
-            this.saveBtn.Location = new System.Drawing.Point(109, 409);
+            this.saveBtn.Location = new System.Drawing.Point(82, 332);
+            this.saveBtn.Margin = new System.Windows.Forms.Padding(2);
             this.saveBtn.Name = "saveBtn";
-            this.saveBtn.Size = new System.Drawing.Size(320, 54);
+            this.saveBtn.Size = new System.Drawing.Size(240, 44);
             this.saveBtn.TabIndex = 4;
             this.saveBtn.Text = "Guardar";
             this.saveBtn.UseVisualStyleBackColor = true;
@@ -252,53 +281,138 @@ namespace PIA_ProcesamientoDeImagenes
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.saveBtn);
-            this.groupBox4.Location = new System.Drawing.Point(799, 13);
+            this.groupBox4.Location = new System.Drawing.Point(599, 11);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(526, 526);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox4.Size = new System.Drawing.Size(394, 427);
             this.groupBox4.TabIndex = 12;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Resultado";
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.videoSourcePlayer);
             this.groupBox5.Controls.Add(this.label1);
+            this.groupBox5.Controls.Add(this.pictureBox1);
             this.groupBox5.Controls.Add(this.devices);
             this.groupBox5.Controls.Add(this.groupBox2);
             this.groupBox5.Controls.Add(this.groupBox1);
-            this.groupBox5.Location = new System.Drawing.Point(16, 13);
+            this.groupBox5.Location = new System.Drawing.Point(12, 11);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(511, 526);
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox5.Size = new System.Drawing.Size(383, 427);
             this.groupBox5.TabIndex = 13;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Actual";
             // 
+            // videoSourcePlayer
+            // 
+            this.videoSourcePlayer.Location = new System.Drawing.Point(5, 20);
+            this.videoSourcePlayer.Name = "videoSourcePlayer";
+            this.videoSourcePlayer.Size = new System.Drawing.Size(363, 263);
+            this.videoSourcePlayer.TabIndex = 8;
+            this.videoSourcePlayer.Text = "videoSourcePlayer";
+            this.videoSourcePlayer.VideoSource = null;
+            this.videoSourcePlayer.Visible = false;
+            this.videoSourcePlayer.NewFrame += new AForge.Controls.VideoSourcePlayer.NewFrameHandler(this.videoSourcePlayer_NewFrame);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(211, 351);
+            this.label1.Location = new System.Drawing.Point(158, 285);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(82, 16);
+            this.label1.Size = new System.Drawing.Size(63, 13);
             this.label1.TabIndex = 7;
             this.label1.Text = "Dispositivos";
             // 
             // devices
             // 
             this.devices.FormattingEnabled = true;
-            this.devices.Location = new System.Drawing.Point(51, 370);
+            this.devices.Location = new System.Drawing.Point(38, 301);
+            this.devices.Margin = new System.Windows.Forms.Padding(2);
             this.devices.Name = "devices";
-            this.devices.Size = new System.Drawing.Size(399, 24);
+            this.devices.Size = new System.Drawing.Size(300, 21);
             this.devices.TabIndex = 6;
+            // 
+            // btnADM
+            // 
+            this.btnADM.Location = new System.Drawing.Point(6, 29);
+            this.btnADM.Name = "btnADM";
+            this.btnADM.Size = new System.Drawing.Size(151, 30);
+            this.btnADM.TabIndex = 14;
+            this.btnADM.Text = "Activar";
+            this.btnADM.UseVisualStyleBackColor = true;
+            this.btnADM.Click += new System.EventHandler(this.btnADM_Click);
+            // 
+            // btnDDM
+            // 
+            this.btnDDM.Location = new System.Drawing.Point(6, 29);
+            this.btnDDM.Name = "btnDDM";
+            this.btnDDM.Size = new System.Drawing.Size(151, 30);
+            this.btnDDM.TabIndex = 15;
+            this.btnDDM.Text = "Desactivar";
+            this.btnDDM.UseVisualStyleBackColor = true;
+            this.btnDDM.Visible = false;
+            this.btnDDM.Click += new System.EventHandler(this.btnDDM_Click);
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.btnADM);
+            this.groupBox6.Controls.Add(this.btnDDM);
+            this.groupBox6.Location = new System.Drawing.Point(418, 283);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(163, 69);
+            this.groupBox6.TabIndex = 16;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Detector de movimiento";
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.btnADR);
+            this.groupBox7.Controls.Add(this.btnDDR);
+            this.groupBox7.Location = new System.Drawing.Point(418, 367);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(163, 69);
+            this.groupBox7.TabIndex = 17;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Detector de rostros";
+            // 
+            // btnADR
+            // 
+            this.btnADR.Location = new System.Drawing.Point(6, 29);
+            this.btnADR.Name = "btnADR";
+            this.btnADR.Size = new System.Drawing.Size(151, 30);
+            this.btnADR.TabIndex = 14;
+            this.btnADR.Text = "Activar";
+            this.btnADR.UseVisualStyleBackColor = true;
+            this.btnADR.Click += new System.EventHandler(this.btnADR_Click);
+            // 
+            // btnDDR
+            // 
+            this.btnDDR.Location = new System.Drawing.Point(6, 29);
+            this.btnDDR.Name = "btnDDR";
+            this.btnDDR.Size = new System.Drawing.Size(151, 30);
+            this.btnDDR.TabIndex = 15;
+            this.btnDDR.Text = "Desactivar";
+            this.btnDDR.UseVisualStyleBackColor = true;
+            this.btnDDR.Visible = false;
+            this.btnDDR.Click += new System.EventHandler(this.btnDDR_Click);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1338, 551);
+            this.ClientSize = new System.Drawing.Size(1004, 448);
+            this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.groupBox6);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Procesamiento de Imagenes";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -311,6 +425,8 @@ namespace PIA_ProcesamientoDeImagenes
             this.groupBox4.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -339,6 +455,13 @@ namespace PIA_ProcesamientoDeImagenes
         private System.Windows.Forms.ComboBox devices;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnDetener;
+        private System.Windows.Forms.Button btnADM;
+        private System.Windows.Forms.Button btnDDM;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.Button btnADR;
+        private System.Windows.Forms.Button btnDDR;
+        private AForge.Controls.VideoSourcePlayer videoSourcePlayer;
     }
 }
 
