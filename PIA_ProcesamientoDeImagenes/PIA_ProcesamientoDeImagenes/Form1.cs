@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,14 +31,46 @@ namespace PIA_ProcesamientoDeImagenes
         private FilterInfoCollection myDevices;
         private VideoCaptureDevice webCam;
         private Bitmap imageClean;
+        String countFaces;
+        String countMov;
 
-        
+
         Bitmap video;
 
         MotionDetector motionDetector;
         float levelMotionDetector;
 
         static readonly CascadeClassifier cascadeClassifier = new CascadeClassifier("haarcascade_frontalface_alt_tree.xml");
+
+        ColorMatrix grayScaleMatrix = new ColorMatrix(
+               new float[][]
+               {
+                new float[] {.3f, .3f, .3f, 0, 0},
+                new float[] {.59f, .59f, .59f, 0, 0},
+                new float[] {.11f, .11f, .11f, 0, 0},
+                new float[] {0, 0, 0, 1, 0},
+                new float[] {0, 0, 0, 0, 1}
+               });
+
+        ColorMatrix negativeColorMatrix = new ColorMatrix(
+            new float[][]
+            {
+                new float[] {-1f, 0f, 0f, 0, 0},
+                new float[] {0f, -1f, 0f, 0, 0},
+                new float[] {0f, 0f, -1f, 0, 0},
+                new float[] { 0, 0, 0, 1, 0},
+                new float[] { 1, 1, 1, 0, 1}
+            });
+
+        ColorMatrix umbralMatrix = new ColorMatrix(
+            new float[][]
+            {
+                new float[] {1.5f, 1.5f, 1.5f, 0, 0},
+                new float[] {1.5f, 1.5f, 1.5f, 0, 0},
+                new float[] {1.5f, 1.5f, 1.5f, 0, 0},
+                new float[] {0, 0, 0, 1, 0},
+                new float[] {-1, -1, -1, 0, 1}
+            });
 
         public Form1()
         {
@@ -55,6 +88,7 @@ namespace PIA_ProcesamientoDeImagenes
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             CloseCamera();
+            pictureBox1.Image = null;
         }
 
         private void onCamera_Click(object sender, EventArgs e)
@@ -64,7 +98,7 @@ namespace PIA_ProcesamientoDeImagenes
             string nameDevices = myDevices[cameraIndex].MonikerString;
             webCam = new VideoCaptureDevice(nameDevices);
             webCam.NewFrame += new AForge.Video.NewFrameEventHandler(Capture);
-            webCam.Start();            
+            webCam.Start();
         }
 
 
@@ -152,15 +186,24 @@ namespace PIA_ProcesamientoDeImagenes
                 Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
                 Image<Bgr, byte> grayImage = bitmap.ToImage<Bgr, byte>();
 
-                Rectangle[] rectangles = cascadeClassifier.DetectMultiScale(grayImage, 1.4, 1);
+                Rectangle[] detectedFaces = cascadeClassifier.DetectMultiScale(grayImage, 1.2, 1);
 
-                foreach (Rectangle rectangle in rectangles)
+                countFaces = detectedFaces.Length.ToString();
+
+                SolidBrush solidBrush = new SolidBrush(Color.Red);
+                Font font = new Font("Arial", 30.0f);
+
+                int i = 0;
+
+                foreach (Rectangle face in detectedFaces)
                 {
+                    i++;
                     using (Graphics graphics = Graphics.FromImage(bitmap))
                     {
-                        using (Pen pen = new Pen(Color.Red, 1))
+                        using (Pen pen = new Pen(Color.Red, 6))
                         {
-                            graphics.DrawRectangle(pen, rectangle);
+                            graphics.DrawRectangle(pen, face);
+                            graphics.DrawString("Persona" + i, font, solidBrush, face.Location);
                         }
                     }
                 }
@@ -180,7 +223,7 @@ namespace PIA_ProcesamientoDeImagenes
         {
             if (pictureBox2.Image != null && checkBoxUmbral.Checked == true && btnDetener.Visible == false)
             {
-                pictureBox2.Image = UmbralImage((Bitmap)pictureBox2.Image, 60);
+                pictureBox2.Image = ApplyColorMatrix((Bitmap)pictureBox2.Image, umbralMatrix);
             }
             else
             {
@@ -190,9 +233,45 @@ namespace PIA_ProcesamientoDeImagenes
 
         private void checkBoxEG_CheckedChanged(object sender, EventArgs e)
         {
-            if (pictureBox2.Image != null && checkBoxEG.Checked == true)
+            if (pictureBox2.Image != null && checkBoxEG.Checked == true && btnDetener.Visible == false)
             {
-                pictureBox2.Image = MakeGrayscale3((Bitmap)pictureBox2.Image);
+                pictureBox2.Image = ApplyColorMatrix((Bitmap)pictureBox2.Image, grayScaleMatrix);
+            }
+            else
+            {
+                // Quitar filtro de la imagen
+            }
+        }
+
+        private void checkBoxNegativos_CheckedChanged(object sender, EventArgs e)
+        {
+            if (pictureBox2.Image != null && checkBoxNegativos.Checked == true && btnDetener.Visible == false)
+            {
+                pictureBox2.Image = ApplyColorMatrix((Bitmap)pictureBox2.Image, negativeColorMatrix);
+            }
+            else
+            {
+                // Quitar filtro de la imagen
+            }
+        }
+
+        private void checkBoxRSP_CheckedChanged(object sender, EventArgs e)
+        {
+            if (pictureBox2.Image != null && checkBoxRSP.Checked == true && btnDetener.Visible == false)
+            {
+                pictureBox2.Image = ImpulseNoise((Bitmap)pictureBox2.Image);
+            }
+            else
+            {
+                // Quitar filtro de la imagen
+            }
+        }
+
+        private void checkBoxGaussian_CheckedChanged(object sender, EventArgs e)
+        {
+            if (pictureBox2.Image != null && checkBoxGaussian.Checked == true && btnDetener.Visible == false)
+            {
+                pictureBox2.Image = GaussianNoise((Bitmap)pictureBox2.Image);
             }
             else
             {
@@ -206,7 +285,7 @@ namespace PIA_ProcesamientoDeImagenes
             checkBoxUmbral.Checked = false;
             checkBoxRSP.Checked = false;
             checkBoxNegativos.Checked = false;
-            checkBoxSobel.Checked = false;
+            checkBoxGaussian.Checked = false;
             checkBoxEG.Checked = false;
         }
 
@@ -247,11 +326,26 @@ namespace PIA_ProcesamientoDeImagenes
 
                 if(checkBoxEG.Checked == true)
                 {
-                    pictureBox2.Image = MakeGrayscale3((Bitmap)video);
-                } else
+                    video = ApplyColorMatrix((Bitmap)video, grayScaleMatrix);
+                } 
+                if(checkBoxNegativos.Checked == true)
                 {
-                    pictureBox2.Image = (Bitmap)e.Frame.Clone();
+                    video = ApplyColorMatrix((Bitmap)video, negativeColorMatrix);
                 }
+                if (checkBoxUmbral.Checked == true)
+                {
+                    video = ApplyColorMatrix((Bitmap)video, umbralMatrix);
+                }
+                if(checkBoxRSP.Checked == true)
+                {
+                    video = ImpulseNoise((Bitmap)video);
+                }
+                if(checkBoxGaussian.Checked == true)
+                {
+                    video = GaussianNoise((Bitmap)video);
+                }
+
+                pictureBox2.Image = video;
             }
         }
 
@@ -266,69 +360,156 @@ namespace PIA_ProcesamientoDeImagenes
 
         /////////////////////   Filtros    ///////////////////////// 
 
-        public Bitmap UmbralImage(Bitmap source, int umb)
+        private static Bitmap ApplyColorMatrix(Image sourceImage, ColorMatrix colorMatrix)
         {
-            // Bitmap con la imagen binaria
-            Bitmap target = new Bitmap(source.Width, source.Height, source.PixelFormat);
-            // Recorrer pixel de la imagen
-            for (int i = 0; i < source.Width; i++)
-            {
-                for (int e = 0; e < source.Height; e++)
-                {
-                    // Color del pixel
-                    Color col = source.GetPixel(i, e);
-                    // Escala de grises
-                    byte gray = (byte)(col.R * 0.3f + col.G * 0.59f + col.B * 0.11f);
-                    // Blanco o negro
-                    byte value = 0;
-                    if (gray > umb)
-                    {
-                        value = 255;
-                    }
-                    // Asginar nuevo color
-                    Color newColor = System.Drawing.Color.FromArgb(value, value, value);
-                    target.SetPixel(i, e, newColor);
+            Bitmap bmp32BppSource = GetArgbCopy(sourceImage);
+            Bitmap bmp32BppDest = new Bitmap(bmp32BppSource.Width, bmp32BppSource.Height, PixelFormat.Format32bppArgb);
 
+            using (Graphics graphics = Graphics.FromImage(bmp32BppDest))
+            {
+                ImageAttributes bmpAttributes = new ImageAttributes();
+                bmpAttributes.SetColorMatrix(colorMatrix);
+
+                graphics.DrawImage(bmp32BppSource, new Rectangle(0, 0, bmp32BppSource.Width, bmp32BppSource.Height),
+                                    0, 0, bmp32BppSource.Width, bmp32BppSource.Height, GraphicsUnit.Pixel, bmpAttributes);
+            }
+            bmp32BppSource.Dispose();
+            return bmp32BppDest;
+        }
+
+        private static Bitmap GetArgbCopy(Image sourceImage)
+        {
+            Bitmap bmpNew = new Bitmap(sourceImage.Width, sourceImage.Height, PixelFormat.Format32bppArgb);
+
+            using (Graphics graphics = Graphics.FromImage(bmpNew))
+            {
+                graphics.DrawImage(sourceImage, new Rectangle(0, 0, bmpNew.Width, bmpNew.Height), new Rectangle(0, 0, bmpNew.Width, bmpNew.Height), GraphicsUnit.Pixel);
+                graphics.Flush();
+            }
+            return bmpNew;
+        }
+
+        public static Bitmap ImpulseNoise(Bitmap image)
+        {
+            int w = image.Width;
+            int h = image.Height;
+
+            BitmapData image_data = image.LockBits(
+                new Rectangle(0, 0, w, h),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format24bppRgb);
+            int bytes = image_data.Stride * image_data.Height;
+            byte[] buffer = new byte[bytes];
+            byte[] result = new byte[bytes];
+            Marshal.Copy(image_data.Scan0, buffer, 0, bytes);
+            image.UnlockBits(image_data);
+
+            Random rnd = new Random();
+            int noise_chance = 10;
+            for (int i = 0; i < bytes; i += 3)
+            {
+                int max = (int)(1000 / noise_chance);
+                int tmp = rnd.Next(max + 1);
+                for (int j = 0; j < 3; j++)
+                {
+                    if (tmp == 0 || tmp == max)
+                    {
+                        int sorp = tmp / max;
+                        result[i + j] = (byte)(sorp * 255);
+                    }
+                    else
+                    {
+                        result[i + j] = buffer[i + j];
+                    }
                 }
             }
 
-            return target;
+            Bitmap result_image = new Bitmap(w, h);
+            BitmapData result_data = result_image.LockBits(
+                new Rectangle(0, 0, w, h),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format24bppRgb);
+            Marshal.Copy(result, 0, result_data.Scan0, bytes);
+            result_image.UnlockBits(result_data);
+
+            return result_image;
         }
 
-        public static Bitmap MakeGrayscale3(Bitmap original)
+        public static Bitmap GaussianNoise(Bitmap image)
         {
-            //create a blank bitmap the same size as original
-            Bitmap newBitmap = new Bitmap(original.Width, original.Height);
+            int w = image.Width;
+            int h = image.Height;
 
-            //get a graphics object from the new image
-            Graphics g = Graphics.FromImage(newBitmap);
+            BitmapData image_data = image.LockBits(
+                new Rectangle(0, 0, w, h),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format24bppRgb);
+            int bytes = image_data.Stride * image_data.Height;
+            byte[] buffer = new byte[bytes];
+            byte[] result = new byte[bytes];
+            Marshal.Copy(image_data.Scan0, buffer, 0, bytes);
+            image.UnlockBits(image_data);
 
-            //create the grayscale ColorMatrix
-            ColorMatrix colorMatrix = new ColorMatrix(
-               new float[][]
-               {
-                 new float[] {.3f, .3f, .3f, 0, 0},
-                 new float[] {.59f, .59f, .59f, 0, 0},
-                 new float[] {.11f, .11f, .11f, 0, 0},
-                 new float[] {0, 0, 0, 1, 0},
-                 new float[] {0, 0, 0, 0, 1}
-               });
+            byte[] noise = new byte[bytes];
+            double[] gaussian = new double[256];
+            int std = 20;
+            Random rnd = new Random();
+            double sum = 0;
+            for (int i = 0; i < 256; i++)
+            {
+                gaussian[i] = (double)((1 / (Math.Sqrt(2 * Math.PI) * std)) * Math.Exp(-Math.Pow(i, 2) / (2 * Math.Pow(std, 2))));
+                sum += gaussian[i];
+            }
 
-            //create some image attributes
-            ImageAttributes attributes = new ImageAttributes();
+            for (int i = 0; i < 256; i++)
+            {
+                gaussian[i] /= sum;
+                gaussian[i] *= bytes;
+                gaussian[i] = (int)Math.Floor(gaussian[i]);
+            }
 
-            //set the color matrix attribute
-            attributes.SetColorMatrix(colorMatrix);
+            int count = 0;
+            for (int i = 0; i < 256; i++)
+            {
+                for (int j = 0; j < (int)gaussian[i]; j++)
+                {
+                    noise[j + count] = (byte)i;
+                }
+                count += (int)gaussian[i];
+            }
 
-            //draw the original image on the new image
-            //using the grayscale color matrix
-            g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
-               0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
+            for (int i = 0; i < bytes - count; i++)
+            {
+                noise[count + i] = 0;
+            }
 
-            //dispose the Graphics object
-            g.Dispose();
-            return newBitmap;
+            noise = noise.OrderBy(x => rnd.Next()).ToArray();
+
+            for (int i = 0; i < bytes; i++)
+            {
+                result[i] = (byte)(buffer[i] + noise[i]);
+            }
+
+            Bitmap result_image = new Bitmap(w, h);
+            BitmapData result_data = result_image.LockBits(
+                new Rectangle(0, 0, w, h),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format24bppRgb);
+            Marshal.Copy(result, 0, result_data.Scan0, bytes);
+            result_image.UnlockBits(result_data);
+            return result_image;
         }
 
+        private void btnScanFace_Click(object sender, EventArgs e)
+        {
+            if(countFaces != null && btnDDR.Visible == true)
+            {
+                labelCountFaces.Text = countFaces;
+            }
+            else
+            {
+                labelCountFaces.Text = "0";
+            }
+        }
     }
 }
