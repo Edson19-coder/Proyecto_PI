@@ -71,6 +71,7 @@ namespace PIA_ProcesamientoDeImagenes
                 new float[] {0, 0, 0, 1, 0},
                 new float[] {-1, -1, -1, 0, 1}
             });
+        private SaveFileDialog pathSave;
 
         public Form1()
         {
@@ -139,9 +140,15 @@ namespace PIA_ProcesamientoDeImagenes
 
         private void saveBtn_Click(object sender, EventArgs e)
         {
+
             if (pictureBox2.Image != null)
             {
-                pictureBox2.Image.Save(pathImages + "FotoChida.jpg", ImageFormat.Jpeg);
+                pathSave = new SaveFileDialog();
+                pathSave.Filter = "jpg files(*jpg)|*.jpg";
+                if(pathSave.ShowDialog() == DialogResult.OK)
+                {
+                    pictureBox2.Image.Save(pathSave.FileName);
+                }
             }
         }
 
@@ -224,10 +231,7 @@ namespace PIA_ProcesamientoDeImagenes
             if (pictureBox2.Image != null && checkBoxUmbral.Checked == true && btnDetener.Visible == false)
             {
                 pictureBox2.Image = ApplyColorMatrix((Bitmap)pictureBox2.Image, umbralMatrix);
-            }
-            else
-            {
-                // Quitar filtro de la imagen
+                checkBoxUmbral.Enabled = false;
             }
         }
 
@@ -236,10 +240,7 @@ namespace PIA_ProcesamientoDeImagenes
             if (pictureBox2.Image != null && checkBoxEG.Checked == true && btnDetener.Visible == false)
             {
                 pictureBox2.Image = ApplyColorMatrix((Bitmap)pictureBox2.Image, grayScaleMatrix);
-            }
-            else
-            {
-                // Quitar filtro de la imagen
+                checkBoxEG.Enabled = false;
             }
         }
 
@@ -248,10 +249,7 @@ namespace PIA_ProcesamientoDeImagenes
             if (pictureBox2.Image != null && checkBoxNegativos.Checked == true && btnDetener.Visible == false)
             {
                 pictureBox2.Image = ApplyColorMatrix((Bitmap)pictureBox2.Image, negativeColorMatrix);
-            }
-            else
-            {
-                // Quitar filtro de la imagen
+                checkBoxNegativos.Enabled = false;
             }
         }
 
@@ -260,10 +258,7 @@ namespace PIA_ProcesamientoDeImagenes
             if (pictureBox2.Image != null && checkBoxRSP.Checked == true && btnDetener.Visible == false)
             {
                 pictureBox2.Image = ImpulseNoise((Bitmap)pictureBox2.Image);
-            }
-            else
-            {
-                // Quitar filtro de la imagen
+                checkBoxRSP.Enabled = false;
             }
         }
 
@@ -272,10 +267,7 @@ namespace PIA_ProcesamientoDeImagenes
             if (pictureBox2.Image != null && checkBoxGaussian.Checked == true && btnDetener.Visible == false)
             {
                 pictureBox2.Image = GaussianNoise((Bitmap)pictureBox2.Image);
-            }
-            else
-            {
-                // Quitar filtro de la imagen
+                checkBoxGaussian.Enabled = false;
             }
         }
 
@@ -287,6 +279,12 @@ namespace PIA_ProcesamientoDeImagenes
             checkBoxNegativos.Checked = false;
             checkBoxGaussian.Checked = false;
             checkBoxEG.Checked = false;
+
+            checkBoxUmbral.Enabled = true;
+            checkBoxRSP.Enabled = true;
+            checkBoxNegativos.Enabled = true;
+            checkBoxGaussian.Enabled = true;
+            checkBoxEG.Enabled = true;
         }
 
         /////////////////////   Funciones    ///////////////////////// 
@@ -360,6 +358,7 @@ namespace PIA_ProcesamientoDeImagenes
 
         /////////////////////   Filtros    ///////////////////////// 
 
+        //Aplicación de matriz
         private static Bitmap ApplyColorMatrix(Image sourceImage, ColorMatrix colorMatrix)
         {
             Bitmap bmp32BppSource = GetArgbCopy(sourceImage);
@@ -377,6 +376,7 @@ namespace PIA_ProcesamientoDeImagenes
             return bmp32BppDest;
         }
 
+        //Se convierte el formato de la pagina ya que tal cual no se puede aplicar el filtro.
         private static Bitmap GetArgbCopy(Image sourceImage)
         {
             Bitmap bmpNew = new Bitmap(sourceImage.Width, sourceImage.Height, PixelFormat.Format32bppArgb);
@@ -389,8 +389,11 @@ namespace PIA_ProcesamientoDeImagenes
             return bmpNew;
         }
 
+        //Sal y pimienta
         public static Bitmap ImpulseNoise(Bitmap image)
         {
+
+            //Obtenemos las dimesiaones de la imagen.
             int w = image.Width;
             int h = image.Height;
 
@@ -398,14 +401,19 @@ namespace PIA_ProcesamientoDeImagenes
                 new Rectangle(0, 0, w, h),
                 ImageLockMode.ReadOnly,
                 PixelFormat.Format24bppRgb);
+
             int bytes = image_data.Stride * image_data.Height;
             byte[] buffer = new byte[bytes];
             byte[] result = new byte[bytes];
             Marshal.Copy(image_data.Scan0, buffer, 0, bytes);
             image.UnlockBits(image_data);
 
+            //Para crear puntos randoms
             Random rnd = new Random();
+
             int noise_chance = 10;
+
+            //Aplicamos pixel por pixel
             for (int i = 0; i < bytes; i += 3)
             {
                 int max = (int)(1000 / noise_chance);
@@ -425,16 +433,20 @@ namespace PIA_ProcesamientoDeImagenes
             }
 
             Bitmap result_image = new Bitmap(w, h);
+
+            //Bloqueamos el acceso de bits para conversión al formato deseado
             BitmapData result_data = result_image.LockBits(
                 new Rectangle(0, 0, w, h),
                 ImageLockMode.WriteOnly,
                 PixelFormat.Format24bppRgb);
+
             Marshal.Copy(result, 0, result_data.Scan0, bytes);
             result_image.UnlockBits(result_data);
 
             return result_image;
         }
 
+        //Gaussian
         public static Bitmap GaussianNoise(Bitmap image)
         {
             int w = image.Width;
